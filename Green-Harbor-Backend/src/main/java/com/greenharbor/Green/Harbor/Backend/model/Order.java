@@ -15,8 +15,8 @@ public class Order {
     @Id
     private String id;
     private String userId;
-    private String address;
     private String name;
+    private String address;
     private List<OrderItem> items;
     private int totalAmount;
     private String status = "Placed";
