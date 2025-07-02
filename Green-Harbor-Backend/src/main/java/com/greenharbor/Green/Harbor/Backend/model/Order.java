@@ -12,16 +12,17 @@ import java.util.List;
 @Document(collection = "orders")
 public class Order {
 
-
+    @Id
+    private String id;
     private String userId;
+    private String address;
+    private String name;
     private List<OrderItem> items;
     private int totalAmount;
-    private String address;
     private String status = "Placed";
     private Date createdAt = new Date();
 
-    @Id
-    private String id;
+
 
     public String getId() {
         return id;
@@ -37,6 +38,13 @@ public class Order {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<OrderItem> getItems() {
