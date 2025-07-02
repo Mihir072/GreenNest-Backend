@@ -2,6 +2,7 @@ package com.greenharbor.Green.Harbor.Backend.controller;
 
 import com.greenharbor.Green.Harbor.Backend.config.AuthRequest;
 import com.greenharbor.Green.Harbor.Backend.config.JwtUtil;
+import com.greenharbor.Green.Harbor.Backend.model.Plant;
 import com.greenharbor.Green.Harbor.Backend.model.User;
 import com.greenharbor.Green.Harbor.Backend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,11 @@ public class AuthController {
         user.setPassword(encoder.encode(updated.getPassword()));
         User savedUser = userRepo.save(user);
         return ResponseEntity.ok(Map.of("Password Updated Successfully :)", savedUser));
+    }
+
+
+    @GetMapping("/users/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.of(userRepo.findByEmail(email));
     }
 }
