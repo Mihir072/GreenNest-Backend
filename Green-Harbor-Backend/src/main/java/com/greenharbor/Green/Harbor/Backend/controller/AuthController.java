@@ -48,8 +48,18 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("token", token, "role", user.getRole(), "email", user.getEmail()));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        // Extract token from header (usually in format: Bearer <token>)
+        String token = authHeader.replace("Bearer ", "");
 
-                     //-------------USER CRUD OPERATIONS-------------//
+        // For now: just acknowledge the request (you could blacklist the token if needed)
+        return ResponseEntity.ok(Map.of("message", "Logout successful. Token discarded on client."));
+    }
+
+
+
+    //-------------USER CRUD OPERATIONS-------------//
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")

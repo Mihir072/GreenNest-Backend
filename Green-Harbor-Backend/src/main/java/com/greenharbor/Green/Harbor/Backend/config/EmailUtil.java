@@ -7,8 +7,8 @@ import java.util.Properties;
 public class EmailUtil {
 
     public static void sendEmail(String toEmail, String subject, String messageText) throws MessagingException {
-        final String fromEmail = "your-email@gmail.com";
-        final String password = "your-app-password";
+        final String fromEmail = "mihirshigvan716@gmail.com";
+        final String password = "efgygqwhvuvvjbzq";
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");

@@ -5,11 +5,13 @@ import com.greenharbor.Green.Harbor.Backend.model.EmailRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
 
+@RestController
 public class EmailController {
-    @PostMapping("/orders/send-confirmation-email")
+    @PostMapping("/send-confirmation-email")
     public ResponseEntity<?> sendEmail(@RequestBody EmailRequest req) {
         try {
             EmailUtil.sendEmail(req.getToEmail(), req.getSubject(), req.getMessage());
