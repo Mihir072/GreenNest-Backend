@@ -2,6 +2,7 @@ package com.greenharbor.Green.Harbor.Backend.controller;
 
 import com.greenharbor.Green.Harbor.Backend.config.JwtUtil;
 import com.greenharbor.Green.Harbor.Backend.model.Order;
+import com.greenharbor.Green.Harbor.Backend.model.OrderItem;
 import com.greenharbor.Green.Harbor.Backend.repository.OrderRepo;
 
 import com.greenharbor.Green.Harbor.Backend.services.EmailService;
@@ -29,15 +30,42 @@ public class OrderController {
     private EmailService emailService;
 
     @PostMapping("/place")
-    public ResponseEntity<?> placeOrder(@RequestBody Order order,
-                                        @RequestHeader("Authorization") String authHeader) {
-
+    public ResponseEntity<?> placeOrder(@RequestBody Order order, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         Claims claims = JwtUtil.extractAllClaims(token);
         order.setUserId(claims.get("userId", String.class));
-        emailService.sendEmail(order.getEmail(), "Hello "+order.getName(), " Your order for"+order.getItems()+"is placed");
+
+        // Build a clean email body
+        String emailBody =
+                "Hello " + order.getName() + ",\n\n" +
+                        "Thank you for your order! 🎉\n\n" +
+                        "Here are your order details:\n\n" +
+                        "Items:\n" +
+                        formatOrderItems(order.getItems()) + "\n" +
+                        "Total Amount: ₹" + order.getTotalAmount() + "\n\n" +
+                        "We will deliver your order to:\n" +
+                        order.getAddress() + "\n\n" +
+                        "Thanks,\nTeam GreenNest";
+
+        emailService.sendEmail(order.getEmail(), "Your Order Confirmation - GreenNest", emailBody);
+
         return ResponseEntity.ok(orderRepo.save(order));
     }
+
+    private String formatOrderItems(List<OrderItem> items) {
+        StringBuilder builder = new StringBuilder();
+        for (OrderItem item : items) {
+            builder.append("- ")
+                    .append(item.getName())
+                    .append(" (x")
+                    .append(item.getQuantity())
+                    .append(") - ₹")
+                    .append(item.getPrice())
+                    .append("\n");
+        }
+        return builder.toString();
+    }
+
 
     @GetMapping("/my-orders")
     public List<Order> userOrders(@RequestHeader("Authorization") String authHeader) {
