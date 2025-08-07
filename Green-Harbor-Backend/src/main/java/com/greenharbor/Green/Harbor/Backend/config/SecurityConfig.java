@@ -28,7 +28,16 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/plants/**", "/send-confirmation-email/**").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/plants/**",
+                                "/send-confirmation-email/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",            // ← add this
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"            // ← optional YAML support
+                        ).permitAll()
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/orders/**").hasRole("USER")
                         .anyRequest().authenticated()

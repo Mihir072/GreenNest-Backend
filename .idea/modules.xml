@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/GreenNest Backend.iml" filepath="$PROJECT_DIR$/.idea/GreenNest Backend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Green-Harbor-Backend/GreenNest-Backend.iml" filepath="$PROJECT_DIR$/Green-Harbor-Backend/GreenNest-Backend.iml" />
     </modules>
   </component>
 </project>

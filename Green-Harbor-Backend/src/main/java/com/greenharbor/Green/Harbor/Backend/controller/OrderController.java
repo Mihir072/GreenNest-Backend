@@ -4,6 +4,7 @@ import com.greenharbor.Green.Harbor.Backend.config.JwtUtil;
 import com.greenharbor.Green.Harbor.Backend.model.Order;
 import com.greenharbor.Green.Harbor.Backend.repository.OrderRepo;
 
+import com.greenharbor.Green.Harbor.Backend.services.EmailService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class OrderController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping("/place")
     public ResponseEntity<?> placeOrder(@RequestBody Order order,
                                         @RequestHeader("Authorization") String authHeader) {
@@ -31,7 +35,7 @@ public class OrderController {
         String token = authHeader.replace("Bearer ", "");
         Claims claims = JwtUtil.extractAllClaims(token);
         order.setUserId(claims.get("userId", String.class));
-
+        emailService.sendEmail(order.getEmail(), "Hello "+order.getName(), " Your order for"+order.getItems()+"is placed");
         return ResponseEntity.ok(orderRepo.save(order));
     }
 
