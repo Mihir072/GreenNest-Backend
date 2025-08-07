@@ -35,7 +35,7 @@ public class OrderController {
         String token = authHeader.replace("Bearer ", "");
         Claims claims = JwtUtil.extractAllClaims(token);
         order.setUserId(claims.get("userId", String.class));
-        emailService.sendEmail(order.getEmail(), "Hello "+order.getName(), " Your order for"+order.getItems()+"is placed");
+        emailService.sendEmail("mihirshigvan716@gmail.com", "Hello "+order.getName(), " Your order for"+order.getItems()+"is placed");
         return ResponseEntity.ok(orderRepo.save(order));
     }
 
