@@ -1,5 +1,6 @@
 package com.greenharbor.Green.Harbor.Backend.controller;
 
+import com.greenharbor.Green.Harbor.Backend.config.AppConstantConfig;
 import com.greenharbor.Green.Harbor.Backend.config.AuthRequest;
 import com.greenharbor.Green.Harbor.Backend.config.JwtUtil;
 import com.greenharbor.Green.Harbor.Backend.model.Plant;
@@ -31,6 +32,7 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
     @Autowired
     private AuthService authService;
 
@@ -42,30 +44,25 @@ public class AuthController {
            User saved = authService.register(user);
            return ResponseEntity.status(HttpStatus.OK).body(saved);
        } catch (Exception e) {
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email is exist..");
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AppConstantConfig.EMAIL_IS_EXIST);
        }
     }
 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        User user = userRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found :("));
-
-        if (!encoder.matches(request.getPassword(), user.getPassword()))
-            throw new RuntimeException("Invalid password");
-
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId());
-        return ResponseEntity.ok(Map.of("token", token, "role", user.getRole(), "email", user.getEmail()));
+        try {
+            User login = authService.login(request);
+            return ResponseEntity.status(HttpStatus.OK).body(login);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AppConstantConfig.ERROR_TO_LOGIN);
+        }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
-        // Extract token from header (usually in format: Bearer <token>)
-        String token = authHeader.replace("Bearer ", "");
-
-        // For now: just acknowledge the request (you could blacklist the token if needed)
-        return ResponseEntity.ok(Map.of("message", "Logout successful. Token discarded on client."));
+        Map<String, String> logout = authService.logout(authHeader);
+        return ResponseEntity.status(HttpStatus.OK).body(logout);
     }
 
 
