@@ -5,8 +5,12 @@ import com.greenharbor.Green.Harbor.Backend.config.JwtUtil;
 import com.greenharbor.Green.Harbor.Backend.model.Plant;
 import com.greenharbor.Green.Harbor.Backend.model.User;
 import com.greenharbor.Green.Harbor.Backend.repository.UserRepo;
+import com.greenharbor.Green.Harbor.Backend.services.AuthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.VariableOperators;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,24 +19,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     @Autowired
     private UserRepo userRepo;
-    @Autowired private PasswordEncoder encoder;
-    @Autowired private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private AuthService authService;
 
 
                                 //-------------Register & Login-------------//
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Email already in use :("));
-        }
-
-        user.setPassword(encoder.encode(user.getPassword()));
-        return ResponseEntity.ok(userRepo.save(user));
+       try {
+           User saved = authService.register(user);
+           return ResponseEntity.status(HttpStatus.OK).body(saved);
+       } catch (Exception e) {
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email is exist..");
+       }
     }
 
 
