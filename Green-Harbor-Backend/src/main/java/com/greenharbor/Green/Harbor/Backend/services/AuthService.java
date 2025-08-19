@@ -44,7 +44,7 @@ public class AuthService {
         return userRepo.save(user);
     }
 
-    public User login(AuthRequest request){
+    public Map<String, Object> login(AuthRequest request) {
         User user = userRepo.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException(AppConstantConfig.USER_NOT_FOUND));
 
@@ -52,10 +52,16 @@ public class AuthService {
             throw new RuntimeException(AppConstantConfig.INVALID_PASSWORD);
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole(), user.getId());
-        String redisKey = AppConstantConfig.SESSION+ user.getId();
+        String redisKey = AppConstantConfig.SESSION + user.getId();
         redisTemplate.opsForValue().set(redisKey, token);
-        return (User) Map.of(AppConstantConfig.TOKEN, token, AppConstantConfig.ROLE, user.getRole(), AppConstantConfig.EMAIL, user.getEmail());
+
+        return Map.of(
+                AppConstantConfig.TOKEN, token,
+                AppConstantConfig.ROLE, user.getRole(),
+                AppConstantConfig.EMAIL, user.getEmail()
+        );
     }
+
 
     public Map<String, String> logout(String authHeader){
         String token = authHeader.replace(AppConstantConfig.BEARER, "");

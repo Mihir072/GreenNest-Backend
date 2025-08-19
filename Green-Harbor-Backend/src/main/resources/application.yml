@@ -6,6 +6,8 @@ spring:
     mongodb:
       uri: mongodb+srv://mihirshigvan716:gvAgfFexbr282STb@cluster0.uhsj0wy.mongodb.net/GreenNestDB?retryWrites=true&w=majority&appName=Cluster0
 
+    redis:
+        uri: redis://default:0WQ6JhjwZzYCq2W9SzECssvEytCz1kP3@redis-17122.c85.us-east-1-2.ec2.redns.redis-cloud.com:17122
   mail:
     host: smtp.gmail.com
     port: 587
@@ -17,6 +19,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
 
 server:
   port: 8080

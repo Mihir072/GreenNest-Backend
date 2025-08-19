@@ -52,12 +52,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
-            User login = authService.login(request);
-            return ResponseEntity.status(HttpStatus.OK).body(login);
+            Map<String, Object> login = authService.login(request); // or AuthResponse if using DTO
+            return ResponseEntity.ok(login);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AppConstantConfig.ERROR_TO_LOGIN);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(AppConstantConfig.ERROR_TO_LOGIN + ": " + e.getMessage()); // helpful for debugging
         }
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
